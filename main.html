@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>JS For Beginners</title>
     <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+</head>
+
+<body>
     <header>
-      <h1>JS For Beginners</h1>
+        <h1>JS For Beginners</h1>
     </header>
 
     <section class="container">
-      <form onsubmit="saveToLocalStorage(event)" id="my-form">
-        <h1>Add User</h1>
-        <div class="msg"></div>
-        <div>
-          <label for="name">Name:</label>
-          <input type="text" name="username" id="name" required>
-        </div>
-        <div>
-          <label for="email">Email:</label>
-          <input type="text" name="emailId" id="email" required>
-        </div>
-        <input class="btn" type="submit" value="Submit">
-      </form>
-      <ul id="listOfUsers"></ul>
-      <script>
-        function saveToLocalStorage(event){
-    event.preventDefault();
-    const name = document.getElementById('name').value;
-    const email =document.getElementById('email').value;
+        <form onsubmit="saveToLocalStorage(event)" id="my-form">
+            <h1>Add User</h1>
+            <div class="msg"></div>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" name="username" id="name" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" name="emailId" id="email" required>
+            </div>
+            <input class="btn" type="submit" value="Submit">
+        </form>
+        <ul id="listOfUsers"></ul>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.6/axios.min.js"></script>
+        <script>
+            function saveToLocalStorage(event) {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
 
-    // localStorage.setItem('name',name);
-    // localStorage.setItem('email',email);
+                // localStorage.setItem('name',name);
+                // localStorage.setItem('email',email);
 
-    const obj = {
-        name,
-        email
-    }
-    localStorage.setItem(obj.email,JSON.stringify(obj));
-    showNewUserOnScreen(obj);
-}
-window.addEventListener("DOMContentLoaded", () => {
+                const obj = {
+                    name,
+                    email
+                }
+                axios.post("https://crudcrud.com/api/642d0510d0d74f54ae52ec1d562d536d/rty", obj)
+                    .then((response) => {
+                        showNewUserOnScreen(response.data)
+                        console.log(response)
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+                    // localStorage.setItem(obj.email, JSON.stringify(obj));
+                    //showNewUserOnScreen(obj);
+            }
+            window.addEventListener("DOMContentLoaded", () => {
                 const localStorageObj = localStorage;
-                const localstoragekeys  = Object.keys(localStorageObj)
+                const localstoragekeys = Object.keys(localStorageObj)
 
-                for(var i =0; i< localstoragekeys.length; i++){
+                for (var i = 0; i < localstoragekeys.length; i++) {
                     const key = localstoragekeys[i]
                     const userDetailsString = localStorageObj[key];
                     const userDetailsObj = JSON.parse(userDetailsString);
@@ -55,7 +66,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
             })
 
-            function showNewUserOnScreen(user){
+            function showNewUserOnScreen(user) {
                 const parentNode = document.getElementById('listOfUsers');
                 const childHTML = `<li id=${user.email}> ${user.name} - ${user.email}
                                         <button onclick=deleteUser('${user.email}')> Delete User </button>
@@ -64,31 +75,33 @@ window.addEventListener("DOMContentLoaded", () => {
 
                 parentNode.innerHTML = parentNode.innerHTML + childHTML;
             }
-            function editUserDetails(emailId, name){
 
-document.getElementById('email').value = emailId;
-document.getElementById('name').value = name;
+            function editUserDetails(emailId, name) {
 
-deleteUser(emailId)
-}
+                document.getElementById('email').value = emailId;
+                document.getElementById('name').value = name;
+
+                deleteUser(emailId)
+            }
 
             // deleteUser('abc@gmail.com')
 
-            function deleteUser(emailId){
+            function deleteUser(emailId) {
                 console.log(emailId)
                 localStorage.removeItem(emailId);
                 removeUserFromScreen(emailId);
 
             }
 
-            function removeUserFromScreen(emailId){
+            function removeUserFromScreen(emailId) {
                 const parentNode = document.getElementById('listOfUsers');
                 const childNodeToBeDeleted = document.getElementById(emailId);
 
                 parentNode.removeChild(childNodeToBeDeleted)
             }
-          </script>
+        </script>
 
 
 </body>
+
 </html>
